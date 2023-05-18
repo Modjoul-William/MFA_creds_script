@@ -59,8 +59,8 @@ class MFACreds:
                 for line in lines:
                         f.write(line)
                         f.write('\n')
-        except:
-            print('There was an issue')
+        except Exception as e:
+            print(f'There was an issue {e}')
 
 def main():
 
