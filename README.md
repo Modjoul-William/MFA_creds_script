@@ -55,3 +55,11 @@ IDENTIFIER = 'Your MFA Identifier Here'
 ```
 
 Ensure that these environment variables match your actual AWS configuration.
+
+## Integration 
+
+Two options to integrate this class:
+
+1. **Create a separate Python module**: You can create a new Python file, copy the contents of the mfa_creds.py file into it, and then import this class wherever you need to use it. 
+
+2. **Copy the class directly into your script**: If you have a single script or you don't want to create a new module for the class, you can just copy the `MFACreds` class directly into your script. 
