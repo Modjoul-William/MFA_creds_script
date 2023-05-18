@@ -92,12 +92,10 @@ class MFACreds:
         else:
             return None
         
-    def hello_world_test(self):
+    def hello_world_test(self, client):
         """
         Method to verify that connection to aws services is working properly
         """
-        self.obtain_temp_MFA_credentials()
-        client = self.create_AWS_connection('s3', 'client')
         for resp in client.list_objects(Bucket=os.getenv('AWS_BUCKET_NAME'), Prefix="2023/05")["Contents"]:
             file_name = client.get_object(Bucket=os.getenv('AWS_BUCKET_NAME'), Key=resp['Key'])
             print(file_name)
@@ -107,7 +105,10 @@ class MFACreds:
 def main():
 
     credentials = MFACreds()
-    credentials.hello_world_test()
+    credentials.obtain_temp_MFA_credentials()
+    client = credentials.create_AWS_connection('s3', 'client')
+
+    credentials.hello_world_test(client)
     
 if __name__ == '__main__':
     main()
