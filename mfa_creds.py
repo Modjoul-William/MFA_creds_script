@@ -2,11 +2,14 @@ import boto3
 import os
 from dotenv import load_dotenv
 
+load_dotenv()
+
 class MFACreds:
 
     def __init__(self):
         current_dir = os.path.dirname(os.path.realpath(__file__))
         self.file_path = os.path.join(current_dir, 'temp.env')
+        print(self.file_path)
         self.access_key = None
         self.secret_access_key = None
         self.session_token = None
@@ -18,9 +21,14 @@ class MFACreds:
 
         TokenCode = input('What is your MFA code for getintoawsmodjoul?')
 
-        sts_client = boto3.client('sts')
-        res = sts_client.get_session_token(SerialNumber = os.getenv['IDENTIFIER'],
-                                           TokenCode = TokenCode)
+        try:
+            sts_client = boto3.client('sts')
+            res = sts_client.get_session_token(SerialNumber = os.environ['IDENTIFIER'],
+                                            TokenCode = TokenCode)
+        except Exception as e:
+            print("\nThere was an error obtaining credentials.\n")
+            print("Please try waiting for your MFA code to refresh.\n")
+            return None
         
         access_key = res['Credentials']['AccessKeyId']
         secret_access_key = res['Credentials']['SecretAccessKey']
@@ -32,7 +40,9 @@ class MFACreds:
 
         self.access_key = access_key
         self.secret_access_key = secret_access_key
-        self.access_key = session_token
+        self.session_token = session_token
+
+        return True
 
     def write_creds_to_file(self):
         """
@@ -44,17 +54,21 @@ class MFACreds:
             f"""AWS_SESSION_TOKEN = '{self.session_token}'""",
             """AWS_REGION = 'us-east-1'"""
             ]
-        with open(self.file_path, 'w') as f:
-            for line in lines:
-                f.write(line)
-                f.write('\n')
+        try:
+            with open(self.file_path, 'w') as f:
+                for line in lines:
+                        f.write(line)
+                        f.write('\n')
+        except:
+            print('There was an issue')
 
 def main():
-    load_dotenv()
 
     credentials = MFACreds()
-    credentials.obtain_MFA_credentials()
-    credentials.write_creds_to_file()
+
+    if credentials.obtain_MFA_credentials() is not None:
+        credentials.write_creds_to_file()
+
 
 if __name__ == '__main__':
     main()
