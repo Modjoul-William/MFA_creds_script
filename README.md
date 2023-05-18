@@ -33,7 +33,9 @@ Here's an example of how to use the MFACreds class:
 ```python
 credentials = MFACreds()
 credentials.obtain_temp_MFA_credentials()
-credentials.hello_world_test()
+client = credentials.create_AWS_connection('s3', 'client')
+    
+credentials.hello_world_test(client)
 ```
 
 This will create an instance of the MFACreds class, use it to prompt for an MFA code and obtain temporary AWS credentials, and then verify that these credentials work by printing the first object from a specified AWS S3 bucket and prefix.
