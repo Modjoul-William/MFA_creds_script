@@ -89,6 +89,8 @@ class MFACreds:
                             f.write('\n')
             except Exception as e:
                 print(f'There was an issue {e}')
+            finally:
+                f.close()
         else:
             return None
         
